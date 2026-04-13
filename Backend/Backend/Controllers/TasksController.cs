@@ -43,8 +43,22 @@ namespace Backend.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("Edit/{id}")]
         public async Task<IActionResult> EditTask([FromBody] AddTaskDto dto, int id)
+        {
+            try
+            {
+                var task = await _taskService.EditTaskAsync(dto, id);
+                return Ok(task);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { massage = ex.Message });
+            }
+        }
+
+        [HttpPut("MarkAsCompleted/{id}")]
+        public async Task<IActionResult> MarkTaskAsCompleted(int id)
         {
             try
             {

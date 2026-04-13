@@ -59,9 +59,22 @@ namespace Backend.Services
             task.StudentId = dto.StudentId;
             
 
-            _context.TaskItems.Add(task);
+            _context.TaskItems.Update(task);
             await _context.SaveChangesAsync();
 
+            return task;
+        }
+
+        public async Task<TaskItem> MarkTaskAsCompletedAsync(int id)
+        {
+            var task = await _context.TaskItems.FindAsync(id);
+            if (task == null)
+                throw new Exception("Task not found");
+
+            task.IsCompleted = true;
+
+            _context.TaskItems.Update(task);
+            await _context.SaveChangesAsync();
             return task;
         }
     }
