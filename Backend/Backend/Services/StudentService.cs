@@ -13,7 +13,27 @@ namespace Backend.Services
             _context = context;
         }
 
-        public async Task<string> SignUpAsync(SignUpDto dto)
+        public async Task<StudentProfileDto> LoginAsync(LoginDto dto)
+        {
+            var student = await _context.Students
+            .FirstOrDefaultAsync(x => x.Email == dto.Email);
+
+            if (student == null || student.PasswordHash != dto.Password)
+                throw new Exception("Invalid email or password");
+
+            return new StudentProfileDto
+            {
+                Id = student.Id,
+                FullName = student.FullName,
+                Email = student.Email,
+                StudentId = student.StudentId,
+                Gender = student.Gender,
+                AcademicLevel = student.AcademicLevel,
+                ProfileImagePath = student.ProfileImagePath
+            };
+        }
+
+        public async Task<string> SignUpAsync(StudentDto dto)
         {
             // check email exists
             if (await _context.Students.AnyAsync(x => x.Email == dto.Email))

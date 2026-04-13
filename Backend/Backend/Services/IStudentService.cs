@@ -4,6 +4,7 @@ namespace Backend.Services
 {
     public interface IStudentService
     {
-        Task<string> SignUpAsync(SignUpDto dto);
+        Task<string> SignUpAsync(StudentDto dto);
+        Task<StudentProfileDto> LoginAsync(LoginDto dto);
     }
 }
