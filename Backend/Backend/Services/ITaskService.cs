@@ -3,5 +3,7 @@
     public interface ITaskService
     {
         Task<TaskItem> AddTaskAsync(AddTaskDto dto);
+        Task<TaskItem> DeleteTaskAsync(int id);
+
     }
 }

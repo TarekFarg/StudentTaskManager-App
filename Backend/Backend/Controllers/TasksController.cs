@@ -28,5 +28,19 @@ namespace Backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteTask(int id)
+        {
+            try
+            {
+                var task = await _taskService.DeleteTaskAsync(id);
+                return Ok(task);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

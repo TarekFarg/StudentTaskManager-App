@@ -33,5 +33,16 @@ namespace Backend.Services
 
             return task;
         }
+
+        public async Task<TaskItem> DeleteTaskAsync(int id)
+        {
+            var task = await _context.TaskItems.FindAsync(id);
+            if (task == null)
+                throw new Exception("Task not found");
+
+            _context.TaskItems.Remove(task);
+            await _context.SaveChangesAsync();
+            return task;
+        }
     }
 }
