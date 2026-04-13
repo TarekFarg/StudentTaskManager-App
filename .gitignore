@@ -1,0 +1,12 @@
+# Visual Studio
+.vs/
+bin/
+obj/
+
+# Flutter
+.dart_tool/
+build/
+
+# OS
+.DS_Store
+Thumbs.db
