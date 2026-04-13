@@ -29,7 +29,7 @@ namespace Backend.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(int id)
         {
             try
@@ -40,6 +40,20 @@ namespace Backend.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditTask([FromBody] AddTaskDto dto, int id)
+        {
+            try
+            {
+                var task = await _taskService.EditTaskAsync(dto, id);
+                return Ok(task);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { massage = ex.Message });
             }
         }
     }

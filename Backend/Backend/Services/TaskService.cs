@@ -44,5 +44,25 @@ namespace Backend.Services
             await _context.SaveChangesAsync();
             return task;
         }
+
+        public async Task<TaskItem> EditTaskAsync(AddTaskDto dto , int id)
+        {
+            var task = await _context.TaskItems.FindAsync(id);
+            if (task == null)
+                throw new Exception("Task not found");
+
+
+            task.Title = dto.Title;
+            task.Description = dto.Description;
+            task.DueDate = dto.DueDate;
+            task.Priority = dto.Priority;
+            task.StudentId = dto.StudentId;
+            
+
+            _context.TaskItems.Add(task);
+            await _context.SaveChangesAsync();
+
+            return task;
+        }
     }
 }
