@@ -7,5 +7,6 @@
         Task<TaskResponseDto> MarkTaskAsCompletedAsync(int id);
         Task<TaskResponseDto> EditTaskAsync(AddTaskDto dto , int id);
 
+        Task<TaskResponseDto> GetTaskByTaskIdAsync(int taskId);
     }
 }

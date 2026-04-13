@@ -15,6 +15,20 @@ namespace Backend.Controllers
             _taskService = taskService;
         }
 
+        [HttpGet("{taskId}")]
+        public async Task<IActionResult> GetTaskByTaskId(int taskId)
+        {
+            try
+            {
+                var task = await _taskService.GetTaskByTaskIdAsync(taskId);
+                return Ok(task);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddTask(AddTaskDto dto)
         {

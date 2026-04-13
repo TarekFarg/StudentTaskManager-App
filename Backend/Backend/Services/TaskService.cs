@@ -97,6 +97,25 @@ namespace Backend.Services
             return taskRespone;
         }
 
+        public async Task<TaskResponseDto> GetTaskByTaskIdAsync(int taskId)
+        {
+            var task = await _context.TaskItems.FindAsync(taskId);
+            if (task == null)
+                throw new Exception("Task not found");
+
+            var taskRespone = new TaskResponseDto
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                DueDate = task.DueDate,
+                Priority = task.Priority,
+                IsCompleted = task.IsCompleted
+            };
+            return taskRespone;
+
+        }
+
         public async Task<TaskResponseDto> MarkTaskAsCompletedAsync(int id)
         {
             var task = await _context.TaskItems.FindAsync(id);
