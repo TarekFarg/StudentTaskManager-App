@@ -13,6 +13,21 @@ namespace Backend.Services
             _context = context;
         }
 
+        public async Task<string> UpdateProfileAsync(int studentId, UpdateProfileDto dto)
+        {
+            var student = await _context.Students.FindAsync(studentId);
+            if (student == null)
+                return "Student not found";
+
+            student.FullName = dto.FullName ?? student.FullName;
+            student.Gender = dto.Gender ?? student.Gender;
+            student.AcademicLevel = dto.AcademicLevel ?? student.AcademicLevel;
+
+            await _context.SaveChangesAsync();
+
+            return "Profile Updated";
+        }
+
         public async Task<StudentProfileDto> GetProfileAsync(int studentId)
         {
             var student = await _context.Students.FindAsync(studentId);

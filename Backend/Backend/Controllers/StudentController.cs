@@ -40,5 +40,12 @@ namespace Backend.Controllers
             var profile = await _studentService.GetProfileAsync(id);
             return Ok(profile);
         }
+
+        [HttpPut("profile/{id}")]
+        public async Task<IActionResult> UpdateProfile(int id, UpdateProfileDto dto)
+        {
+            var result = await _studentService.UpdateProfileAsync(id, dto);
+            return Ok(new { message = result });
+        }
     }
 }
