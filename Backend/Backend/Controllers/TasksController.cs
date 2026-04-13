@@ -62,7 +62,7 @@ namespace Backend.Controllers
         {
             try
             {
-                var task = await _taskService.EditTaskAsync(dto, id);
+                var task = await _taskService.MarkTaskAsCompletedAsync(id);
                 return Ok(task);
             }
             catch (Exception ex)
