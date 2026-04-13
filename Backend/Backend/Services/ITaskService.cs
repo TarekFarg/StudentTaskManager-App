@@ -8,5 +8,6 @@
         Task<TaskResponseDto> EditTaskAsync(AddTaskDto dto , int id);
 
         Task<TaskResponseDto> GetTaskByTaskIdAsync(int taskId);
+        Task<List<TaskResponseDto>> GetTasksByStudentAsync(int studentId);
     }
 }

@@ -29,6 +29,13 @@ namespace Backend.Controllers
             }
         }
 
+        [HttpGet("student/{studentId}")]
+        public async Task<IActionResult> GetTasksByStudent(int studentId)
+        {
+            var tasks = await _taskService.GetTasksByStudentAsync(studentId);
+            return Ok(tasks);
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddTask(AddTaskDto dto)
         {

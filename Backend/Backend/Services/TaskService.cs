@@ -1,5 +1,6 @@
 ﻿
 using Backend.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace Backend.Services
@@ -114,6 +115,24 @@ namespace Backend.Services
             };
             return taskRespone;
 
+        }
+
+        public async Task<List<TaskResponseDto>> GetTasksByStudentAsync(int studentId)
+        {
+            var tasks = await _context.TaskItems
+                .Where(t => t.StudentId == studentId)
+                .Select(t => new TaskResponseDto
+                {
+                    Id = t.Id,
+                    Title = t.Title,
+                    Description = t.Description,
+                    DueDate = t.DueDate,
+                    Priority = t.Priority,
+                    IsCompleted = t.IsCompleted
+                })
+                .ToListAsync();
+
+            return tasks;
         }
 
         public async Task<TaskResponseDto> MarkTaskAsCompletedAsync(int id)
