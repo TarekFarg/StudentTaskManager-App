@@ -12,10 +12,10 @@ namespace Backend.Services
         {
             _context = context;
         }
-        public async Task<TaskItem> AddTaskAsync(AddTaskDto dto)
+        public async Task<TaskResponseDto> AddTaskAsync(AddTaskDto dto)
         {
             // check student exists
-            var student = await _context.Students.FindAsync(dto.StudentId);
+            var student = await _context.Students.FindAsync(dto.UserId);
             if (student == null)
                 throw new Exception("Student not found");
 
@@ -25,27 +25,50 @@ namespace Backend.Services
                 Description = dto.Description,
                 DueDate = dto.DueDate,
                 Priority = dto.Priority,
-                StudentId = dto.StudentId
+                StudentId = dto.UserId
             };
 
             _context.TaskItems.Add(task);
             await _context.SaveChangesAsync();
 
-            return task;
+            var taskRespone = new TaskResponseDto
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                DueDate = task.DueDate,
+                Priority = task.Priority,
+                IsCompleted = task.IsCompleted
+            };
+
+            return taskRespone;
         }
 
-        public async Task<TaskItem> DeleteTaskAsync(int id)
+        public async Task<TaskResponseDto> DeleteTaskAsync(int id)
         {
             var task = await _context.TaskItems.FindAsync(id);
             if (task == null)
                 throw new Exception("Task not found");
 
+            
+
             _context.TaskItems.Remove(task);
             await _context.SaveChangesAsync();
-            return task;
+
+            var taskRespone = new TaskResponseDto
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                DueDate = task.DueDate,
+                Priority = task.Priority,
+                IsCompleted = task.IsCompleted
+            };
+
+            return taskRespone;
         }
 
-        public async Task<TaskItem> EditTaskAsync(AddTaskDto dto , int id)
+        public async Task<TaskResponseDto> EditTaskAsync(AddTaskDto dto , int id)
         {
             var task = await _context.TaskItems.FindAsync(id);
             if (task == null)
@@ -56,16 +79,25 @@ namespace Backend.Services
             task.Description = dto.Description;
             task.DueDate = dto.DueDate;
             task.Priority = dto.Priority;
-            task.StudentId = dto.StudentId;
-            
+            task.StudentId = dto.UserId;
 
             _context.TaskItems.Update(task);
             await _context.SaveChangesAsync();
 
-            return task;
+            var taskRespone = new TaskResponseDto
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                DueDate = task.DueDate,
+                Priority = task.Priority,
+                IsCompleted = task.IsCompleted
+            };
+
+            return taskRespone;
         }
 
-        public async Task<TaskItem> MarkTaskAsCompletedAsync(int id)
+        public async Task<TaskResponseDto> MarkTaskAsCompletedAsync(int id)
         {
             var task = await _context.TaskItems.FindAsync(id);
             if (task == null)
@@ -73,9 +105,21 @@ namespace Backend.Services
 
             task.IsCompleted = true;
 
+            
+
             _context.TaskItems.Update(task);
             await _context.SaveChangesAsync();
-            return task;
+
+            var taskRespone = new TaskResponseDto
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                DueDate = task.DueDate,
+                Priority = task.Priority,
+                IsCompleted = task.IsCompleted
+            };
+            return taskRespone;
         }
     }
 }

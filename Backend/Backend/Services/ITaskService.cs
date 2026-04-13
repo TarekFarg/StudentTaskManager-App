@@ -2,10 +2,10 @@
 {
     public interface ITaskService
     {
-        Task<TaskItem> AddTaskAsync(AddTaskDto dto);
-        Task<TaskItem> DeleteTaskAsync(int id);
-        Task<TaskItem> MarkTaskAsCompletedAsync(int id);
-        Task<TaskItem> EditTaskAsync(AddTaskDto dto , int id);
+        Task<TaskResponseDto> AddTaskAsync(AddTaskDto dto);
+        Task<TaskResponseDto> DeleteTaskAsync(int id);
+        Task<TaskResponseDto> MarkTaskAsCompletedAsync(int id);
+        Task<TaskResponseDto> EditTaskAsync(AddTaskDto dto , int id);
 
     }
 }
