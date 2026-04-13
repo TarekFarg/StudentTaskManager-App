@@ -42,4 +42,6 @@ namespace Backend.Dtos
         public int? AcademicLevel { get; set; }
         public string? ProfileImagePath { get; set; }
     }
+
+
 }

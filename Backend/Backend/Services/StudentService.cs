@@ -13,6 +13,24 @@ namespace Backend.Services
             _context = context;
         }
 
+        public async Task<StudentProfileDto> GetProfileAsync(int studentId)
+        {
+            var student = await _context.Students.FindAsync(studentId);
+            if (student == null)
+                throw new Exception("Student not found");
+
+            return new StudentProfileDto
+            {
+                Id = student.Id,
+                FullName = student.FullName,
+                Email = student.Email,
+                StudentId = student.StudentId,
+                Gender = student.Gender,
+                AcademicLevel = student.AcademicLevel,
+                ProfileImagePath = student.ProfileImagePath
+            };
+        }
+
         public async Task<StudentProfileDto> LoginAsync(LoginDto dto)
         {
             var student = await _context.Students

@@ -33,5 +33,12 @@ namespace Backend.Controllers
                 return Unauthorized(new { message = ex.Message });
             }
         }
+
+        [HttpGet("profile/{id}")]
+        public async Task<IActionResult> GetProfile(int id)
+        {
+            var profile = await _studentService.GetProfileAsync(id);
+            return Ok(profile);
+        }
     }
 }

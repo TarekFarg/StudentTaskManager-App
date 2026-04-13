@@ -6,5 +6,6 @@ namespace Backend.Services
     {
         Task<string> SignUpAsync(StudentDto dto);
         Task<StudentProfileDto> LoginAsync(LoginDto dto);
+        Task<StudentProfileDto> GetProfileAsync(int studentId);
     }
 }
