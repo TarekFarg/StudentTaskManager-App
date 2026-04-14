@@ -19,7 +19,10 @@ namespace Backend.Controllers
         public async Task<IActionResult> SignUp(StudentDto dto)
         {
             var result = await _studentService.SignUpAsync(dto);
-            return Ok(new { message = result });
+            if(result == "Signup Success")
+                return Ok(new { message = result });
+            else
+                return BadRequest(new { message = result });
         }
 
         [HttpPost("login")]

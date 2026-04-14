@@ -83,7 +83,7 @@ namespace Backend.Services
                 Email = dto.Email,
                 StudentId = dto.StudentId,
                 AcademicLevel = dto.AcademicLevel,
-                PasswordHash = dto.Password // لاحقًا نعمل Hash
+                PasswordHash = dto.Password 
             };
 
             _context.Students.Add(student);
