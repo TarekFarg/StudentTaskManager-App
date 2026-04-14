@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
+import 'task_details_screen.dart';
 
 class TasksScreen extends StatefulWidget {
   final int userId;
@@ -80,18 +81,22 @@ class _TasksScreenState extends State<TasksScreen> {
 
                     subtitle: Text(task["description"] ?? ""),
 
-                    // mark completed
                     onTap: () {
-                      if (task["isCompleted"] != true) {
-                        markTaskAsCompleted(task["id"], task);
-                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TaskDetailsScreen(
+                            taskId: task["id"],
+                            userId: widget.userId,
+                          ),
+                        ),
+                      );
                     },
 
-                    //delete feature
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Delete button (existing feature)
+                        // Delete button
                         IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () {
@@ -123,7 +128,7 @@ class _TasksScreenState extends State<TasksScreen> {
                           },
                         ),
 
-                        // Completed indicator
+                        // status icon
                         task["isCompleted"] == true
                             ? const Icon(Icons.done, color: Colors.green)
                             : const Icon(Icons.touch_app),

@@ -54,4 +54,41 @@ class ApiService {
       throw Exception("Failed to mark task as completed");
     }
   }
+
+  // get Task by id
+  static Future getTaskById(int id) async {
+    final response = await http.get(Uri.parse("$baseUrl/Tasks/$id"));
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Failed to load task");
+    }
+  }
+
+  // edit task
+  static Future editTask(
+    int id,
+    String title,
+    String description,
+    DateTime dueDate,
+    String priority,
+    int userId,
+  ) async {
+    final response = await http.put(
+      Uri.parse("$baseUrl/Tasks/Edit/$id"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "title": title,
+        "description": description,
+        "dueDate": dueDate.toIso8601String(),
+        "priority": priority,
+        "userId": userId,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception("Failed to update task");
+    }
+  }
 }
