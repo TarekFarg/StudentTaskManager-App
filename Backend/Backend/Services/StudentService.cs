@@ -22,6 +22,7 @@ namespace Backend.Services
             student.FullName = dto.FullName ?? student.FullName;
             student.Gender = dto.Gender ?? student.Gender;
             student.AcademicLevel = dto.AcademicLevel ?? student.AcademicLevel;
+            student.ProfileImagePath = dto.ProfileImagePath ?? student.ProfileImagePath;
 
             await _context.SaveChangesAsync();
 

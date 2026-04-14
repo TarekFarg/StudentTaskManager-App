@@ -48,5 +48,7 @@ namespace Backend.Dtos
         public string FullName { get; set; }
         public string? Gender { get; set; }
         public int? AcademicLevel { get; set; }
+
+        public string? ProfileImagePath { get; set; }
     }
 }
