@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import 'tasks_screen.dart';
+import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -26,12 +27,15 @@ class _LoginScreenState extends State<LoginScreen> {
               decoration: const InputDecoration(labelText: "Email"),
             ),
             const SizedBox(height: 10),
+
             TextField(
               controller: passwordController,
               obscureText: true,
               decoration: const InputDecoration(labelText: "Password"),
             ),
+
             const SizedBox(height: 20),
+
             ElevatedButton(
               onPressed: () async {
                 try {
@@ -40,16 +44,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     passwordController.text,
                   );
 
-                  // go to Tasks Screen for this user
                   int userId = result["id"];
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (_) => TasksScreen(userId: userId),
                     ),
                   );
-
-                  print(result);
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Login Success")),
@@ -61,6 +63,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
               },
               child: const Text("Login"),
+            ),
+
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SignupScreen()),
+                );
+              },
+              child: const Text("Don't have an account? Sign Up"),
             ),
           ],
         ),

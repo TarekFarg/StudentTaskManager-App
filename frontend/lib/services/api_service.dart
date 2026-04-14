@@ -116,4 +116,31 @@ class ApiService {
       throw Exception("Failed to add task");
     }
   }
+
+  // Signup
+  static Future signup(
+    String fullName,
+    String gender,
+    String email,
+    String studentId,
+    int academicLevel,
+    String password,
+  ) async {
+    final response = await http.post(
+      Uri.parse("$baseUrl/Student/signup"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "fullName": fullName,
+        "gender": gender,
+        "email": email,
+        "studentId": studentId,
+        "academicLevel": academicLevel,
+        "password": password,
+      }),
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception(response.body);
+    }
+  }
 }
