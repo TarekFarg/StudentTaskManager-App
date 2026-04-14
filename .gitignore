@@ -2,6 +2,7 @@
 .vs/
 bin/
 obj/
+wwwroot/profileImages/
 
 # Flutter
 .dart_tool/

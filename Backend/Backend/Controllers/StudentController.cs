@@ -39,18 +39,6 @@ namespace Backend.Controllers
             }
         }
 
-        [HttpGet("profile/{id}")]
-        public async Task<IActionResult> GetProfile(int id)
-        {
-            var profile = await _studentService.GetProfileAsync(id);
-            return Ok(profile);
-        }
-
-        [HttpPut("profile/{id}")]
-        public async Task<IActionResult> UpdateProfile(int id, UpdateProfileDto dto)
-        {
-            var result = await _studentService.UpdateProfileAsync(id, dto);
-            return Ok(new { message = result });
-        }
+        
     }
 }
