@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class StudentController : Controller
     {
         private readonly IStudentService _studentService;
