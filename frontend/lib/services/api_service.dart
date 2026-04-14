@@ -91,4 +91,29 @@ class ApiService {
       throw Exception("Failed to update task");
     }
   }
+
+  // add task
+  static Future addTask(
+    String title,
+    String description,
+    DateTime dueDate,
+    String priority,
+    int userId,
+  ) async {
+    final response = await http.post(
+      Uri.parse("$baseUrl/Tasks"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "title": title,
+        "description": description,
+        "dueDate": dueDate.toIso8601String(),
+        "priority": priority,
+        "userId": userId,
+      }),
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception("Failed to add task");
+    }
+  }
 }

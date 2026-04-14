@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import 'task_details_screen.dart';
+import 'add_task_screen.dart';
 
 class TasksScreen extends StatefulWidget {
   final int userId;
@@ -44,7 +45,27 @@ class _TasksScreenState extends State<TasksScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("My Tasks"), centerTitle: true),
+      appBar: AppBar(
+        title: const Text("My Tasks"),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () async {
+              var result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddTaskScreen(userId: widget.userId),
+                ),
+              );
+
+              if (result == true) {
+                loadTasks();
+              }
+            },
+          ),
+        ],
+      ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : tasks.isEmpty
@@ -62,7 +83,7 @@ class _TasksScreenState extends State<TasksScreen> {
                     vertical: 6,
                   ),
                   child: ListTile(
-                    // 🟢 Mark as Completed UI
+                    // Mark as Completed
                     leading: Icon(
                       task["isCompleted"] == true
                           ? Icons.check_circle
