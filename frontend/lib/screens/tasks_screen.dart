@@ -62,13 +62,63 @@ class _TasksScreenState extends State<TasksScreen> {
                   ),
                   child: ListTile(
                     leading: const Icon(Icons.task_alt),
+
                     title: Text(task["title"] ?? "No Title"),
                     subtitle: Text(task["description"] ?? ""),
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text("Delete Task"),
+                            content: const Text(
+                              "Are you sure you want to delete this task?",
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text("Cancel"),
+                              ),
+
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  deleteTask(task["id"]);
+                                },
+                                child: const Text(
+                                  "Delete",
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 );
               },
             ),
     );
+  }
+
+  // delete task
+  void deleteTask(int taskId) async {
+    try {
+      await ApiService.deleteTask(taskId);
+
+      setState(() {
+        tasks.removeWhere((task) => task["id"] == taskId);
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Task deleted successfully")),
+      );
+    } catch (e) {
+      print("Delete error: $e");
+    }
   }
 }

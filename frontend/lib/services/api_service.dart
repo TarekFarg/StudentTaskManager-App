@@ -34,4 +34,13 @@ class ApiService {
       throw Exception("Failed to load tasks");
     }
   }
+
+  // delete task
+  static Future deleteTask(int taskId) async {
+    final response = await http.delete(Uri.parse("$baseUrl/Tasks/$taskId"));
+
+    if (response.statusCode != 200 && response.statusCode != 204) {
+      throw Exception("Failed to delete task");
+    }
+  }
 }
