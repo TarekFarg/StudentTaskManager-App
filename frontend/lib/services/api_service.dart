@@ -154,4 +154,26 @@ class ApiService {
       throw Exception("Failed to load profile");
     }
   }
+
+  // edit profile
+  static Future updateProfile(
+    int id,
+    String fullName,
+    String gender,
+    int academicLevel,
+  ) async {
+    final response = await http.put(
+      Uri.parse("$baseUrl/Student/profile/$id"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "fullName": fullName,
+        "gender": gender,
+        "academicLevel": academicLevel,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception("Failed to update profile");
+    }
+  }
 }
