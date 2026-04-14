@@ -61,42 +61,73 @@ class _TasksScreenState extends State<TasksScreen> {
                     vertical: 6,
                   ),
                   child: ListTile(
-                    leading: const Icon(Icons.task_alt),
+                    // 🟢 Mark as Completed UI
+                    leading: Icon(
+                      task["isCompleted"] == true
+                          ? Icons.check_circle
+                          : Icons.radio_button_unchecked,
+                      color: task["isCompleted"] == true ? Colors.green : null,
+                    ),
 
-                    title: Text(task["title"] ?? "No Title"),
+                    title: Text(
+                      task["title"] ?? "No Title",
+                      style: TextStyle(
+                        decoration: task["isCompleted"] == true
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
+                      ),
+                    ),
+
                     subtitle: Text(task["description"] ?? ""),
 
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
+                    // mark completed
+                    onTap: () {
+                      if (task["isCompleted"] != true) {
+                        markTaskAsCompleted(task["id"], task);
+                      }
+                    },
 
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text("Delete Task"),
-                            content: const Text(
-                              "Are you sure you want to delete this task?",
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text("Cancel"),
-                              ),
-
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  deleteTask(task["id"]);
-                                },
-                                child: const Text(
-                                  "Delete",
-                                  style: TextStyle(color: Colors.red),
+                    //delete feature
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Delete button (existing feature)
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text("Delete Task"),
+                                content: const Text(
+                                  "Are you sure you want to delete this task?",
                                 ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text("Cancel"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      deleteTask(task["id"]);
+                                    },
+                                    child: const Text(
+                                      "Delete",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        );
-                      },
+                            );
+                          },
+                        ),
+
+                        // Completed indicator
+                        task["isCompleted"] == true
+                            ? const Icon(Icons.done, color: Colors.green)
+                            : const Icon(Icons.touch_app),
+                      ],
                     ),
                   ),
                 );
@@ -119,6 +150,23 @@ class _TasksScreenState extends State<TasksScreen> {
       );
     } catch (e) {
       print("Delete error: $e");
+    }
+  }
+
+  // Mark as completed
+  void markTaskAsCompleted(int taskId, Map task) async {
+    try {
+      await ApiService.markTaskAsCompleted(taskId);
+
+      setState(() {
+        task["isCompleted"] = true;
+      });
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Task marked as completed")));
+    } catch (e) {
+      print("Error: $e");
     }
   }
 }

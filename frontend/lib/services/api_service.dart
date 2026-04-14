@@ -43,4 +43,15 @@ class ApiService {
       throw Exception("Failed to delete task");
     }
   }
+
+  // Mark as completed
+  static Future markTaskAsCompleted(int id) async {
+    final response = await http.put(
+      Uri.parse("$baseUrl/Tasks/MarkAsCompleted/$id"),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception("Failed to mark task as completed");
+    }
+  }
 }
