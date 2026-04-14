@@ -143,4 +143,15 @@ class ApiService {
       throw Exception(response.body);
     }
   }
+
+  // get profile
+  static Future getProfile(int id) async {
+    final response = await http.get(Uri.parse("$baseUrl/Student/profile/$id"));
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Failed to load profile");
+    }
+  }
 }

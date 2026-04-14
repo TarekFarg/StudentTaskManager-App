@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import 'task_details_screen.dart';
 import 'add_task_screen.dart';
+import 'profile_screen.dart';
 
 class TasksScreen extends StatefulWidget {
   final int userId;
@@ -49,6 +50,18 @@ class _TasksScreenState extends State<TasksScreen> {
         title: const Text("My Tasks"),
         centerTitle: true,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfileScreen(userId: widget.userId),
+                ),
+              );
+            },
+          ),
+
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
