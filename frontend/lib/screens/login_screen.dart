@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
+import 'tasks_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -37,6 +38,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   var result = await ApiService.login(
                     emailController.text,
                     passwordController.text,
+                  );
+
+                  // go to Tasks Screen for this user
+                  int userId = result["id"];
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => TasksScreen(userId: userId),
+                    ),
                   );
 
                   print(result);
