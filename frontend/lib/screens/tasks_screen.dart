@@ -61,7 +61,6 @@ class _TasksScreenState extends State<TasksScreen> {
               );
             },
           ),
-
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
@@ -96,12 +95,21 @@ class _TasksScreenState extends State<TasksScreen> {
                     vertical: 6,
                   ),
                   child: ListTile(
-                    // Mark as Completed
-                    leading: Icon(
-                      task["isCompleted"] == true
-                          ? Icons.check_circle
-                          : Icons.radio_button_unchecked,
-                      color: task["isCompleted"] == true ? Colors.green : null,
+                    // ✅ Mark as Completed Button
+                    leading: IconButton(
+                      icon: Icon(
+                        task["isCompleted"] == true
+                            ? Icons.check_circle
+                            : Icons.radio_button_unchecked,
+                        color: task["isCompleted"] == true
+                            ? Colors.green
+                            : null,
+                      ),
+                      onPressed: () {
+                        if (task["isCompleted"] != true) {
+                          markTaskAsCompleted(task["id"], task);
+                        }
+                      },
                     ),
 
                     title: Text(
@@ -115,6 +123,7 @@ class _TasksScreenState extends State<TasksScreen> {
 
                     subtitle: Text(task["description"] ?? ""),
 
+                    // ✅ Open Details Only
                     onTap: () {
                       Navigator.push(
                         context,
@@ -162,7 +171,7 @@ class _TasksScreenState extends State<TasksScreen> {
                           },
                         ),
 
-                        // status icon
+                        // Status icon
                         task["isCompleted"] == true
                             ? const Icon(Icons.done, color: Colors.green)
                             : const Icon(Icons.touch_app),
@@ -192,7 +201,7 @@ class _TasksScreenState extends State<TasksScreen> {
     }
   }
 
-  // Mark as completed
+  // mark as completed
   void markTaskAsCompleted(int taskId, Map task) async {
     try {
       await ApiService.markTaskAsCompleted(taskId);
