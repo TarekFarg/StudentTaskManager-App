@@ -10,6 +10,8 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   TextEditingController fullNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController studentIdController = TextEditingController();
@@ -22,12 +24,8 @@ class _SignupScreenState extends State<SignupScreen> {
   bool isLoading = false;
 
   void signup() async {
-    if (passwordController.text != confirmPasswordController.text) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Passwords do not match")));
-      return;
-    }
+    // ✅ validate form first
+    if (!_formKey.currentState!.validate()) return;
 
     setState(() => isLoading = true);
 
@@ -44,7 +42,7 @@ class _SignupScreenState extends State<SignupScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("Signup successful")));
-      // navigate to login
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -65,78 +63,131 @@ class _SignupScreenState extends State<SignupScreen> {
       appBar: AppBar(title: const Text("Sign Up")),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: fullNameController,
-              decoration: const InputDecoration(labelText: "Full Name"),
-            ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              /// Full Name
+              TextFormField(
+                controller: fullNameController,
+                decoration: const InputDecoration(labelText: "Full Name"),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Full name is required";
+                  }
+                  return null;
+                },
+              ),
 
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(labelText: "Email"),
-            ),
+              /// Email
+              TextFormField(
+                controller: emailController,
+                decoration: const InputDecoration(labelText: "Email"),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Email is required";
+                  }
+                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                    return "Enter a valid email";
+                  }
+                  return null;
+                },
+              ),
 
-            TextField(
-              controller: studentIdController,
-              decoration: const InputDecoration(labelText: "Student ID"),
-            ),
+              /// Student ID
+              TextFormField(
+                controller: studentIdController,
+                decoration: const InputDecoration(labelText: "Student ID"),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Student ID is required";
+                  }
+                  return null;
+                },
+              ),
 
-            const SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-            // Gender Dropdown
-            DropdownButton<String>(
-              value: gender,
-              isExpanded: true,
-              items: [
-                "Male",
-                "Female",
-              ].map((g) => DropdownMenuItem(value: g, child: Text(g))).toList(),
-              onChanged: (val) {
-                setState(() => gender = val!);
-              },
-            ),
+              /// Gender
+              DropdownButtonFormField<String>(
+                value: gender,
+                decoration: const InputDecoration(labelText: "Gender"),
+                items: ["Male", "Female"]
+                    .map((g) => DropdownMenuItem(value: g, child: Text(g)))
+                    .toList(),
+                onChanged: (val) {
+                  setState(() => gender = val!);
+                },
+              ),
 
-            const SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-            // Academic Level Dropdown
-            DropdownButton<int>(
-              value: academicLevel,
-              isExpanded: true,
-              items: [1, 2, 3, 4]
-                  .map(
-                    (lvl) =>
-                        DropdownMenuItem(value: lvl, child: Text("Level $lvl")),
-                  )
-                  .toList(),
-              onChanged: (val) {
-                setState(() => academicLevel = val!);
-              },
-            ),
+              /// Academic Level
+              DropdownButtonFormField<int>(
+                value: academicLevel,
+                decoration: const InputDecoration(labelText: "Academic Level"),
+                items: [1, 2, 3, 4]
+                    .map(
+                      (lvl) => DropdownMenuItem(
+                        value: lvl,
+                        child: Text("Level $lvl"),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (val) {
+                  setState(() => academicLevel = val!);
+                },
+              ),
 
-            const SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(labelText: "Password"),
-            ),
+              /// Password
+              TextFormField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(labelText: "Password"),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Password is required";
+                  }
+                  if (value.length < 8) {
+                    return "At least 8 characters required";
+                  }
+                  if (!RegExp(r'\d').hasMatch(value)) {
+                    return "Must contain at least one number";
+                  }
+                  return null;
+                },
+              ),
 
-            TextField(
-              controller: confirmPasswordController,
-              obscureText: true,
-              decoration: const InputDecoration(labelText: "Confirm Password"),
-            ),
+              /// Confirm Password
+              TextFormField(
+                controller: confirmPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: "Confirm Password",
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Confirm your password";
+                  }
+                  if (value != passwordController.text) {
+                    return "Passwords do not match";
+                  }
+                  return null;
+                },
+              ),
 
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            isLoading
-                ? const CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: signup,
-                    child: const Text("Sign Up"),
-                  ),
-          ],
+              isLoading
+                  ? const CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: signup,
+                      child: const Text("Sign Up"),
+                    ),
+            ],
+          ),
         ),
       ),
     );
