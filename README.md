@@ -1,24 +1,24 @@
 # 🎓 Student Task Manager
 
-A mobile application for managing student tasks and assignments, built with Flutter and ASP.NET Core Web API.
+A full-stack mobile application for managing student tasks and assignments, built with **Flutter** and **ASP.NET Core Web API**.
 
 ---
 
 ## 🚀 Project Overview
 
-This project allows students to:
+This application allows students to:
 
-* Register and login
-* Manage their tasks (CRUD operations)
-* View and update their profile
-
-The backend is built using ASP.NET Core Web API, and the frontend will be developed using Flutter.
+* 🔐 Register & Login
+* 📋 Manage tasks (Create, Read, Update, Delete)
+* ✅ Mark tasks as completed
+* 👤 View and edit profile
+* 🖼️ Upload and update profile image (Camera / Gallery)
 
 ---
 
 ## 🏗️ Architecture
 
-The project follows a clean architecture:
+The backend follows a clean architecture:
 
 * **Controllers** → Handle HTTP requests
 * **Services** → Business logic
@@ -39,7 +39,9 @@ The project follows a clean architecture:
 * Gender
 * AcademicLevel
 * PasswordHash
-* ProfileImagePath
+* ProfileImagePath ✅ (stores image URL)
+
+---
 
 ### 📋 Task
 
@@ -58,7 +60,7 @@ The project follows a clean architecture:
 ### 🟢 Signup
 
 ```http
-POST /api/student/signup
+POST /api/Student/signup
 ```
 
 #### Request
@@ -74,29 +76,12 @@ POST /api/student/signup
 }
 ```
 
-#### Response
-
-```json
-{
-  "message": "Signup Success"
-}
-```
-
 ---
 
 ### 🟢 Login
 
 ```http
-POST /api/student/login
-```
-
-#### Request
-
-```json
-{
-  "email": "20201234@stud.fci-cu.edu.eg",
-  "password": "12345678"
-}
+POST /api/Student/login
 ```
 
 #### Response
@@ -120,53 +105,7 @@ POST /api/student/login
 ### 🟢 Add Task
 
 ```http
-POST /api/tasks
-```
-
-#### Request
-
-```json
-{
-  "title": "Study Flutter",
-  "description": "Finish UI screens",
-  "dueDate": "2026-04-20T00:00:00",
-  "priority": "High",
-  "studentId": 1
-}
-```
-
-#### Response
-
-```json
-{
-  "id": 5,
-  "title": "Study Flutter",
-  "description": "Finish UI screens",
-  "dueDate": "2026-04-20T00:00:00",
-  "priority": "High",
-  "isCompleted": false
-}
-```
-
----
-
-### 🟢 Get Task by Id
-
-```http
-GET /api/tasks/{taskId}
-```
-
-#### Response
-
-```json
-{
-  "id": 1,
-  "title": "Study Flutter",
-  "description": "Finish UI",
-  "dueDate": "2026-04-20T00:00:00",
-  "priority": "High",
-  "isCompleted": false
-}
+POST /api/Tasks
 ```
 
 ---
@@ -174,22 +113,15 @@ GET /api/tasks/{taskId}
 ### 🟢 Get Tasks by Student
 
 ```http
-GET /api/tasks/student/{studentId}
+GET /api/Tasks/student/{studentId}
 ```
 
-#### Response
+---
 
-```json
-[
-  {
-    "id": 1,
-    "title": "Study Flutter",
-    "description": "Finish UI",
-    "dueDate": "2026-04-20T00:00:00",
-    "priority": "High",
-    "isCompleted": false
-  }
-]
+### 🟢 Get Task Details
+
+```http
+GET /api/Tasks/{taskId}
 ```
 
 ---
@@ -197,27 +129,7 @@ GET /api/tasks/student/{studentId}
 ### 🟡 Update Task
 
 ```http
-PUT /api/tasks/{id}
-```
-
-#### Request
-
-```json
-{
-  "title": "Updated Task",
-  "description": "Updated desc",
-  "dueDate": "2026-04-25T00:00:00",
-  "priority": "Medium",
-  "studentId": 1
-}
-```
-
-#### Response
-
-```json
-{
-  "message": "Task updated successfully"
-}
+PUT /api/Tasks/{id}
 ```
 
 ---
@@ -225,15 +137,7 @@ PUT /api/tasks/{id}
 ### 🔴 Delete Task
 
 ```http
-DELETE /api/tasks/{id}
-```
-
-#### Response
-
-```json
-{
-  "message": "Task deleted successfully"
-}
+DELETE /api/Tasks/{id}
 ```
 
 ---
@@ -241,15 +145,7 @@ DELETE /api/tasks/{id}
 ### 🟢 Mark Task as Completed
 
 ```http
-PUT /api/tasks/{id}/complete
-```
-
-#### Response
-
-```json
-{
-  "message": "Task marked as completed"
-}
+PUT /api/Tasks/{id}/complete
 ```
 
 ---
@@ -259,21 +155,7 @@ PUT /api/tasks/{id}/complete
 ### 🟢 Get Profile
 
 ```http
-GET /api/student/profile/{id}
-```
-
-#### Response
-
-```json
-{
-  "id": 1,
-  "fullName": "Tarek Mohamed",
-  "email": "20201234@stud.fci-cu.edu.eg",
-  "studentId": "20201234",
-  "gender": "Male",
-  "academicLevel": 3,
-  "profileImagePath": null
-}
+GET /api/Profile/{id}
 ```
 
 ---
@@ -281,60 +163,104 @@ GET /api/student/profile/{id}
 ### 🟡 Update Profile
 
 ```http
-PUT /api/student/profile/{id}
+PUT /api/Profile/{id}
 ```
 
 #### Request
 
 ```json
 {
-  "fullName": "Tarek M",
+  "fullName": "Updated Name",
   "gender": "Male",
-  "academicLevel": 4
+  "academicLevel": 4,
+  "profileImagePath": "image_url_here"
 }
 ```
+
+---
+
+## 🖼️ Image Upload API
+
+### 🟢 Upload Profile Image
+
+```http
+POST /api/Profile/upload-profile-image
+```
+
+#### Description:
+
+* Accepts image file (multipart/form-data)
+* Stores image in server (wwwroot/profileImages)
+* Returns image URL
 
 #### Response
 
 ```json
 {
-  "message": "Profile Updated"
+  "path": "http://localhost:5000/profileImages/image.png"
 }
 ```
 
 ---
 
+## 📱 Flutter Features
+
+* Login & Signup screens
+* Tasks list with:
+
+  * Delete task
+  * Mark as completed
+* Task details screen + Edit task
+* Add new task screen
+* Profile screen:
+
+  * View data in table style
+  * Edit profile
+  * Upload profile image (Camera / Gallery)
+* API integration using HTTP
+
+---
+
 ## 🛠️ Technologies Used
+
+### Backend
 
 * ASP.NET Core Web API
 * Entity Framework Core
 * SQL Server
-* Swagger (API Testing)
-* Flutter (Frontend - in progress)
+* Swagger
+
+### Frontend
+
+* Flutter
+* HTTP package
+* Image Picker
 
 ---
 
 ## ⚠️ Notes
 
-* Authentication is currently implemented without JWT.
-* StudentId is passed manually in requests.
-* DTOs are used to avoid circular reference issues.
-* Clean architecture is applied (Controller → Service → DTO).
+* Authentication currently **without JWT**
+* StudentId is passed manually
+* Images are stored in server (not database)
+* Database stores only image path (best practice)
 
 ---
 
-## 🔜 Next Steps
+## 🔜 Future Improvements
 
-* Implement JWT Authentication
-* Connect Flutter frontend with API
-* Add profile image upload
-* Improve validation and error handling
+* 🔐 Add JWT Authentication
+* ☁️ Use Cloud storage (AWS / Cloudinary)
+* 🖼️ Image compression before upload
+* 📊 Task filtering & sorting
+* 🔔 Notifications & reminders
 
 ---
 
 ## 👨‍💻 Author
 
-Tarek Mohamed
-Faculty of Computers and Artificial Intelligence - Cairo University
+**Tarek Mohamed Abdullah**
+Faculty of Computers and Artificial Intelligence
+Cairo University
 
 ---
