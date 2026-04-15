@@ -24,7 +24,7 @@ class _SignupScreenState extends State<SignupScreen> {
   bool isLoading = false;
 
   void signup() async {
-    // ✅ validate form first
+    //  validate form first
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => isLoading = true);
