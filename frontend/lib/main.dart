@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Student Task Manager',
+      routes: {'/login': (context) => const LoginScreen()},
       home: const LoginScreen(),
     );
   }

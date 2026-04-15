@@ -92,11 +92,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   ImageProvider? getProfileImage() {
     if (imageBytes != null) {
-      return MemoryImage(imageBytes!); // Web
+      return MemoryImage(imageBytes!);
     } else if (profile!["profileImagePath"] != null) {
       return NetworkImage(profile!["profileImagePath"]);
     }
     return null;
+  }
+
+  //  LOGOUT FUNCTION
+  void logout() {
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
   }
 
   @override
@@ -109,7 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  //  PROFILE IMAGE
+                  // PROFILE IMAGE
                   Stack(
                     children: [
                       CircleAvatar(
@@ -119,7 +124,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ? const Icon(Icons.person, size: 50)
                             : null,
                       ),
-
                       if (isEditing)
                         Positioned(
                           bottom: 0,
@@ -159,7 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   const SizedBox(height: 20),
 
-                  //  DATA TABLE
+                  // DATA
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
@@ -284,6 +288,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ],
                     ],
+                  ),
+
+                  //  LOGOUT BUTTON
+                  const SizedBox(height: 20),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                      ),
+                      onPressed: logout,
+                      child: const Text("Logout"),
+                    ),
                   ),
                 ],
               ),
