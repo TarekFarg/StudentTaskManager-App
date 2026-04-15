@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class ApiService {
   static const String baseUrl = "http://localhost:5247/api";
@@ -146,7 +148,7 @@ class ApiService {
 
   // get profile
   static Future getProfile(int id) async {
-    final response = await http.get(Uri.parse("$baseUrl/Student/profile/$id"));
+    final response = await http.get(Uri.parse("$baseUrl/Profile/$id"));
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -161,19 +163,45 @@ class ApiService {
     String fullName,
     String gender,
     int academicLevel,
+    String? imagePath,
   ) async {
     final response = await http.put(
-      Uri.parse("$baseUrl/Student/profile/$id"),
+      Uri.parse("$baseUrl/Profile/$id"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
         "fullName": fullName,
         "gender": gender,
         "academicLevel": academicLevel,
+        "profileImagePath": imagePath,
       }),
     );
 
     if (response.statusCode != 200) {
       throw Exception("Failed to update profile");
+    }
+  }
+
+  // upload profile image
+  static Future<String> uploadProfileImage(XFile image) async {
+    var request = http.MultipartRequest(
+      "POST",
+      Uri.parse("$baseUrl/Profile/upload-profile-image"),
+    );
+
+    var bytes = await image.readAsBytes();
+
+    request.files.add(
+      http.MultipartFile.fromBytes("file", bytes, filename: image.name),
+    );
+
+    var response = await request.send();
+    var responseBody = await response.stream.bytesToString();
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(responseBody);
+      return data["path"];
+    } else {
+      throw Exception("Image upload failed");
     }
   }
 }

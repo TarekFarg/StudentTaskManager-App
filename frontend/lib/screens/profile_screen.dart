@@ -1,4 +1,6 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../services/api_service.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -13,12 +15,14 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   Map? profile;
   bool isLoading = true;
-
   bool isEditing = false;
 
   TextEditingController nameController = TextEditingController();
   String gender = "Male";
   int academicLevel = 1;
+
+  XFile? imageFile;
+  Uint8List? imageBytes;
 
   @override
   void initState() {
@@ -35,20 +39,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+  Future<void> pickImage(ImageSource source) async {
+    final picked = await ImagePicker().pickImage(source: source);
+
+    if (picked != null) {
+      final bytes = await picked.readAsBytes();
+
+      setState(() {
+        imageFile = picked;
+        imageBytes = bytes;
+      });
+    }
+  }
+
   void updateProfile() async {
     try {
+      String? imagePath = profile!["profileImagePath"];
+
+      if (imageFile != null) {
+        imagePath = await ApiService.uploadProfileImage(imageFile!);
+      }
+
       await ApiService.updateProfile(
         widget.userId,
         nameController.text,
         gender,
         academicLevel,
+        imagePath,
       );
 
       setState(() {
         profile!["fullName"] = nameController.text;
         profile!["gender"] = gender;
         profile!["academicLevel"] = academicLevel;
+        profile!["profileImagePath"] = imagePath;
         isEditing = false;
+        imageFile = null;
+        imageBytes = null;
       });
 
       ScaffoldMessenger.of(
@@ -63,6 +90,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  ImageProvider? getProfileImage() {
+    if (imageBytes != null) {
+      return MemoryImage(imageBytes!); // Web
+    } else if (profile!["profileImagePath"] != null) {
+      return NetworkImage(profile!["profileImagePath"]);
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,19 +108,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
           : Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Center(child: Icon(Icons.person, size: 80)),
+                  //  PROFILE IMAGE
+                  Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundImage: getProfileImage(),
+                        child: getProfileImage() == null
+                            ? const Icon(Icons.person, size: 50)
+                            : null,
+                      ),
+
+                      if (isEditing)
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: IconButton(
+                            icon: const Icon(Icons.camera_alt),
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) => Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ListTile(
+                                      leading: const Icon(Icons.camera),
+                                      title: const Text("Camera"),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        pickImage(ImageSource.camera);
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(Icons.image),
+                                      title: const Text("Gallery"),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        pickImage(ImageSource.gallery);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                    ],
+                  ),
 
                   const SizedBox(height: 20),
 
+                  //  DATA TABLE
                   Card(
-                    elevation: 3,
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          // NAME
                           Row(
                             children: [
                               const Expanded(child: Text("Name")),
@@ -95,30 +175,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ],
                           ),
-
                           const Divider(),
 
-                          // EMAIL
                           Row(
                             children: [
                               const Expanded(child: Text("Email")),
                               Expanded(child: Text(profile!["email"])),
                             ],
                           ),
-
                           const Divider(),
 
-                          // STUDENT ID
                           Row(
                             children: [
                               const Expanded(child: Text("Student ID")),
                               Expanded(child: Text(profile!["studentId"])),
                             ],
                           ),
-
                           const Divider(),
 
-                          // GENDER
                           Row(
                             children: [
                               const Expanded(child: Text("Gender")),
@@ -143,10 +217,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ],
                           ),
-
                           const Divider(),
 
-                          // LEVEL
                           Row(
                             children: [
                               const Expanded(child: Text("Level")),
@@ -178,7 +250,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   const SizedBox(height: 20),
 
-                  // BUTTONS
                   Row(
                     children: [
                       Expanded(
@@ -187,7 +258,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             if (isEditing) {
                               updateProfile();
                             } else {
-                              // تحميل القيم القديمة
                               nameController.text = profile!["fullName"];
                               gender = profile!["gender"];
                               academicLevel = profile!["academicLevel"];
@@ -198,13 +268,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Text(isEditing ? "Save" : "Edit Profile"),
                         ),
                       ),
-
                       if (isEditing) ...[
                         const SizedBox(width: 10),
                         Expanded(
                           child: OutlinedButton(
                             onPressed: () {
-                              setState(() => isEditing = false);
+                              setState(() {
+                                isEditing = false;
+                                imageFile = null;
+                                imageBytes = null;
+                              });
                             },
                             child: const Text("Cancel"),
                           ),
