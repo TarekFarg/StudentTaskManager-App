@@ -36,6 +36,13 @@ namespace Backend.Controllers
             return Ok(tasks);
         }
 
+        [HttpGet("student/{studentId}/favorites")]
+        public async Task<IActionResult> GetFavoriteTasksByStudent(int studentId)
+        {
+            var tasks = await _taskService.GetFavoriteTasksByStudentAsync(studentId);
+            return Ok(tasks);
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddTask(AddTaskDto dto)
         {

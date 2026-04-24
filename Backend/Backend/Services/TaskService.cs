@@ -140,6 +140,25 @@ namespace Backend.Services
             return tasks;
         }
 
+        public async Task<List<TaskResponseDto>> GetFavoriteTasksByStudentAsync(int studentId)
+        {
+            var tasks = await _context.TaskItems
+                .Where(t => t.StudentId == studentId && t.IsFavorite)
+                .Select(t => new TaskResponseDto
+                {
+                    Id = t.Id,
+                    Title = t.Title,
+                    Description = t.Description,
+                    DueDate = t.DueDate,
+                    Priority = t.Priority,
+                    IsCompleted = t.IsCompleted,
+                    IsFavorite = t.IsFavorite
+                })
+                .ToListAsync();
+
+            return tasks;
+        }
+
         public async Task<TaskResponseDto> MarkTaskAsCompletedAsync(int id)
         {
             var task = await _context.TaskItems.FindAsync(id);
