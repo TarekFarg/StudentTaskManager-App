@@ -9,5 +9,8 @@
 
         Task<TaskResponseDto> GetTaskByTaskIdAsync(int taskId);
         Task<List<TaskResponseDto>> GetTasksByStudentAsync(int studentId);
+
+        Task<TaskResponseDto> MarkAsFavorite(int taskId);
+        Task<TaskResponseDto> RemoveFromFavorite(int taskId);
     }
 }

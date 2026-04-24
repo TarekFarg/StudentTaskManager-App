@@ -25,4 +25,5 @@ public class TaskResponseDto
     public DateTime DueDate { get; set; }
     public string Priority { get; set; }
     public bool IsCompleted { get; set; }
+    public bool IsFavorite { get; set; }
 }

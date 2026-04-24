@@ -91,5 +91,33 @@ namespace Backend.Controllers
                 return BadRequest(new { massage = ex.Message });
             }
         }
+
+        [HttpPatch("{id}/favorite")]
+        public async Task<IActionResult> AddToFavorite(int id)
+        {
+            try
+            {
+                var task = await _taskService.MarkAsFavorite(id);
+                return Ok(task);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { massage = ex.Message });
+            }
+        }
+
+        [HttpPatch("{id}/unfavorite")]
+        public async Task<IActionResult> RemoveFromFavorite(int id)
+        {
+            try
+            {
+                var task = await _taskService.RemoveFromFavorite(id);
+                return Ok(task);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { massage = ex.Message });
+            }
+        }
     }
 }

@@ -18,6 +18,8 @@ public class TaskItem
 
     public bool IsCompleted { get; set; } = false;
 
+    public bool IsFavorite { get; set; } = false;
+
     // Foreign Key
     public int StudentId { get; set; }
 

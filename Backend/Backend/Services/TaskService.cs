@@ -39,7 +39,8 @@ namespace Backend.Services
                 Description = task.Description,
                 DueDate = task.DueDate,
                 Priority = task.Priority,
-                IsCompleted = task.IsCompleted
+                IsCompleted = task.IsCompleted,
+                IsFavorite = task.IsFavorite
             };
 
             return taskRespone;
@@ -63,7 +64,8 @@ namespace Backend.Services
                 Description = task.Description,
                 DueDate = task.DueDate,
                 Priority = task.Priority,
-                IsCompleted = task.IsCompleted
+                IsCompleted = task.IsCompleted,
+                IsFavorite = task.IsFavorite
             };
 
             return taskRespone;
@@ -92,7 +94,8 @@ namespace Backend.Services
                 Description = task.Description,
                 DueDate = task.DueDate,
                 Priority = task.Priority,
-                IsCompleted = task.IsCompleted
+                IsCompleted = task.IsCompleted,
+                IsFavorite = task.IsFavorite
             };
 
             return taskRespone;
@@ -111,7 +114,8 @@ namespace Backend.Services
                 Description = task.Description,
                 DueDate = task.DueDate,
                 Priority = task.Priority,
-                IsCompleted = task.IsCompleted
+                IsCompleted = task.IsCompleted,
+                IsFavorite = task.IsFavorite
             };
             return taskRespone;
 
@@ -128,7 +132,8 @@ namespace Backend.Services
                     Description = t.Description,
                     DueDate = t.DueDate,
                     Priority = t.Priority,
-                    IsCompleted = t.IsCompleted
+                    IsCompleted = t.IsCompleted,
+                    IsFavorite = t.IsFavorite
                 })
                 .ToListAsync();
 
@@ -155,7 +160,56 @@ namespace Backend.Services
                 Description = task.Description,
                 DueDate = task.DueDate,
                 Priority = task.Priority,
-                IsCompleted = task.IsCompleted
+                IsCompleted = task.IsCompleted,
+                IsFavorite = task.IsFavorite
+            };
+            return taskRespone;
+        }
+
+        public async Task<TaskResponseDto> MarkAsFavorite(int taskId)
+        {
+            var task = await _context.TaskItems.FindAsync(taskId);
+
+            if (task == null)
+                throw new Exception("Task not found");
+
+            task.IsFavorite = true;
+
+            await _context.SaveChangesAsync();
+
+            var taskRespone = new TaskResponseDto
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                DueDate = task.DueDate,
+                Priority = task.Priority,
+                IsCompleted = task.IsCompleted,
+                IsFavorite = task.IsFavorite
+            };
+            return taskRespone;
+        }
+
+        public async Task<TaskResponseDto> RemoveFromFavorite(int taskId)
+        {
+            var task = await _context.TaskItems.FindAsync(taskId);
+
+            if (task == null)
+                throw new Exception("Task not found");
+
+            task.IsFavorite = false;
+
+            await _context.SaveChangesAsync();
+
+            var taskRespone = new TaskResponseDto
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                DueDate = task.DueDate,
+                Priority = task.Priority,
+                IsCompleted = task.IsCompleted,
+                IsFavorite = task.IsFavorite
             };
             return taskRespone;
         }
