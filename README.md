@@ -11,6 +11,7 @@ This application allows students to:
 * 🔐 Register & Login
 * 📋 Manage tasks (Create, Read, Update, Delete)
 * ✅ Mark tasks as completed
+* ⭐ Favorite / Unfavorite tasks
 * 👤 View and edit profile
 * 🖼️ Upload and update profile image (Camera / Gallery)
 
@@ -51,6 +52,7 @@ The backend follows a clean architecture:
 * DueDate
 * Priority (Low / Medium / High)
 * IsCompleted
+* IsFavorite
 * StudentId (FK)
 
 ---
@@ -63,7 +65,7 @@ The backend follows a clean architecture:
 POST /api/Student/signup
 ```
 
-#### Request
+#### Request Body
 
 ```json
 {
@@ -82,6 +84,15 @@ POST /api/Student/signup
 
 ```http
 POST /api/Student/login
+```
+
+#### Request Body
+
+```json
+{
+  "email": "20201234@stud.fci-cu.edu.eg",
+  "password": "12345678"
+}
 ```
 
 #### Response
@@ -108,13 +119,29 @@ POST /api/Student/login
 POST /api/Tasks
 ```
 
+#### Request Body
+
+```json
+{
+  "title": "Complete Assignment",
+  "description": "Finish the data structures homework",
+  "dueDate": "2025-05-01T00:00:00",
+  "priority": "High",
+  "userId": 1
+}
+```
+
 ---
 
-### 🟢 Get Tasks by Student
+### 🟢 Get All Tasks by Student
 
 ```http
 GET /api/Tasks/student/{studentId}
 ```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `studentId` | `int` | The student's ID |
 
 ---
 
@@ -124,12 +151,32 @@ GET /api/Tasks/student/{studentId}
 GET /api/Tasks/{taskId}
 ```
 
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `taskId` | `int` | The task's ID |
+
 ---
 
-### 🟡 Update Task
+### 🟡 Edit Task
 
 ```http
-PUT /api/Tasks/{id}
+PUT /api/Tasks/Edit/{id}
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `int` | The task's ID |
+
+#### Request Body
+
+```json
+{
+  "title": "Updated Task Title",
+  "description": "Updated description",
+  "dueDate": "2025-06-01T00:00:00",
+  "priority": "Medium",
+  "userId": 1
+}
 ```
 
 ---
@@ -140,13 +187,57 @@ PUT /api/Tasks/{id}
 DELETE /api/Tasks/{id}
 ```
 
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `int` | The task's ID |
+
 ---
 
-### 🟢 Mark Task as Completed
+### 🟡 Mark Task as Completed
 
 ```http
-PUT /api/Tasks/{id}/complete
+PUT /api/Tasks/MarkAsCompleted/{id}
 ```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `int` | The task's ID |
+
+---
+
+### ⭐ Get Favorite Tasks by Student
+
+```http
+GET /api/Tasks/student/{studentId}/favorites
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `studentId` | `int` | The student's ID |
+
+---
+
+### ⭐ Favorite a Task
+
+```http
+PATCH /api/Tasks/{id}/favorite
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `int` | The task's ID |
+
+---
+
+### ⭐ Unfavorite a Task
+
+```http
+PATCH /api/Tasks/{id}/unfavorite
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `int` | The task's ID |
 
 ---
 
@@ -158,6 +249,10 @@ PUT /api/Tasks/{id}/complete
 GET /api/Profile/{id}
 ```
 
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `int` | The student's ID |
+
 ---
 
 ### 🟡 Update Profile
@@ -166,7 +261,11 @@ GET /api/Profile/{id}
 PUT /api/Profile/{id}
 ```
 
-#### Request
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `id` | `int` | The student's ID |
+
+#### Request Body
 
 ```json
 {
@@ -187,11 +286,17 @@ PUT /api/Profile/{id}
 POST /api/Profile/upload-profile-image
 ```
 
-#### Description:
+#### Description
 
-* Accepts image file (multipart/form-data)
-* Stores image in server (wwwroot/profileImages)
-* Returns image URL
+* Accepts image file (`multipart/form-data`)
+* Stores image in server (`wwwroot/profileImages`)
+* Returns the image URL
+
+#### Request
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `file` | `binary` | Image file to upload |
 
 #### Response
 
@@ -203,6 +308,27 @@ POST /api/Profile/upload-profile-image
 
 ---
 
+## 📊 API Summary
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/Student/signup` | Register a new student |
+| `POST` | `/api/Student/login` | Login and get student data |
+| `POST` | `/api/Tasks` | Add a new task |
+| `GET` | `/api/Tasks/{taskId}` | Get task details |
+| `GET` | `/api/Tasks/student/{studentId}` | Get all tasks for a student |
+| `GET` | `/api/Tasks/student/{studentId}/favorites` | Get favorite tasks for a student |
+| `PUT` | `/api/Tasks/Edit/{id}` | Edit a task |
+| `PUT` | `/api/Tasks/MarkAsCompleted/{id}` | Mark a task as completed |
+| `DELETE` | `/api/Tasks/{id}` | Delete a task |
+| `PATCH` | `/api/Tasks/{id}/favorite` | Mark a task as favorite |
+| `PATCH` | `/api/Tasks/{id}/unfavorite` | Remove a task from favorites |
+| `GET` | `/api/Profile/{id}` | Get student profile |
+| `PUT` | `/api/Profile/{id}` | Update student profile |
+| `POST` | `/api/Profile/upload-profile-image` | Upload profile image |
+
+---
+
 ## 📱 Flutter Features
 
 * Login & Signup screens
@@ -210,6 +336,8 @@ POST /api/Profile/upload-profile-image
 
   * Delete task
   * Mark as completed
+  * Favorite / Unfavorite task
+* Favorites screen
 * Task details screen + Edit task
 * Add new task screen
 * Profile screen:
@@ -257,10 +385,3 @@ POST /api/Profile/upload-profile-image
 
 ---
 
-## 👨‍💻 Author
-
-**Tarek Mohamed Abdullah**
-Faculty of Computers and Artificial Intelligence
-Cairo University
-
----
