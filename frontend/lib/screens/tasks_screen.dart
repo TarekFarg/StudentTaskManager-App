@@ -3,6 +3,8 @@ import '../services/api_service.dart';
 import 'task_details_screen.dart';
 import 'add_task_screen.dart';
 import 'profile_screen.dart';
+import 'favorite_tasks_screen.dart';
+import 'deadline_screen.dart';
 
 class TasksScreen extends StatefulWidget {
   final int userId;
@@ -50,6 +52,19 @@ class _TasksScreenState extends State<TasksScreen> {
         title: const Text("My Tasks"),
         centerTitle: true,
         actions: [
+          // ⭐ Favorite Tasks Screen
+          IconButton(
+            icon: const Icon(Icons.favorite),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FavoriteTasksScreen(tasks: tasks),
+                ),
+              );
+            },
+          ),
+
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {
@@ -139,6 +154,34 @@ class _TasksScreenState extends State<TasksScreen> {
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        IconButton(
+                          icon: Icon(
+                            task["isFavorite"] == true
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: Colors.red,
+                          ),
+                          onPressed: () {
+                            toggleFavorite(task);
+                          },
+                        ),
+
+                        IconButton(
+                          icon: const Icon(
+                            Icons.access_time,
+                            color: Colors.blue,
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    DeadlineScreen(task: task),
+                              ),
+                            );
+                          },
+                        ),
+
                         // Delete button
                         IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
@@ -199,6 +242,22 @@ class _TasksScreenState extends State<TasksScreen> {
     } catch (e) {
       print("Delete error: $e");
     }
+  }
+
+  void toggleFavorite(Map task) {
+    setState(() {
+      task["isFavorite"] = !(task["isFavorite"] == true);
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          task["isFavorite"] == true
+              ? "Added to favorites"
+              : "Removed from favorites",
+        ),
+      ),
+    );
   }
 
   // mark as completed

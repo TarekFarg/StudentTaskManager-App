@@ -110,7 +110,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
               /// Gender
               DropdownButtonFormField<String>(
-                value: gender,
+                initialValue: gender,
                 decoration: const InputDecoration(labelText: "Gender"),
                 items: ["Male", "Female"]
                     .map((g) => DropdownMenuItem(value: g, child: Text(g)))
@@ -124,7 +124,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
               /// Academic Level
               DropdownButtonFormField<int>(
-                value: academicLevel,
+                initialValue: academicLevel,
                 decoration: const InputDecoration(labelText: "Academic Level"),
                 items: [1, 2, 3, 4]
                     .map(
