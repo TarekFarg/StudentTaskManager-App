@@ -244,20 +244,37 @@ class _TasksScreenState extends State<TasksScreen> {
     }
   }
 
-  void toggleFavorite(Map task) {
+  void toggleFavorite(Map task) async {
+    final oldValue = task["isFavorite"] == true;
+
     setState(() {
-      task["isFavorite"] = !(task["isFavorite"] == true);
+      task["isFavorite"] = !oldValue;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          task["isFavorite"] == true
-              ? "Added to favorites"
-              : "Removed from favorites",
+    try {
+      // Call API
+      if (oldValue) {
+        await ApiService.markTaskAsUnfavorite(task["id"]);
+      } else {
+        await ApiService.markTaskAsFavorite(task["id"]);
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            !oldValue ? "Added to favorites" : "Removed from favorites",
+          ),
         ),
-      ),
-    );
+      );
+    } catch (e) {
+      setState(() {
+        task["isFavorite"] = oldValue;
+      });
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Something went wrong")));
+    }
   }
 
   // mark as completed

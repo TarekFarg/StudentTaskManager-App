@@ -56,6 +56,26 @@ class ApiService {
     }
   }
 
+  // Favorite
+  static Future markTaskAsFavorite(int id) async {
+    final response = await http.patch(Uri.parse("$baseUrl/Tasks/$id/favorite"));
+
+    if (response.statusCode != 200) {
+      throw Exception("Failed to mark task as favorite");
+    }
+  }
+
+  // Unfavorite
+  static Future markTaskAsUnfavorite(int id) async {
+    final response = await http.patch(
+      Uri.parse("$baseUrl/Tasks/$id/unfavorite"),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception("Failed to unfavorite task");
+    }
+  }
+
   // get Task by id
   static Future getTaskById(int id) async {
     final response = await http.get(Uri.parse("$baseUrl/Tasks/$id"));
