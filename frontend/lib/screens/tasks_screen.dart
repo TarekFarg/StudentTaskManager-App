@@ -52,7 +52,7 @@ class _TasksScreenState extends State<TasksScreen> {
         title: const Text("My Tasks"),
         centerTitle: true,
         actions: [
-          // ⭐ Favorite Tasks Screen
+          // Favorite Tasks Screen
           IconButton(
             icon: const Icon(Icons.favorite),
             onPressed: () {
@@ -110,7 +110,7 @@ class _TasksScreenState extends State<TasksScreen> {
                     vertical: 6,
                   ),
                   child: ListTile(
-                    // ✅ Mark as Completed Button
+                    // Mark as Completed Button
                     leading: IconButton(
                       icon: Icon(
                         task["isCompleted"] == true
@@ -136,9 +136,55 @@ class _TasksScreenState extends State<TasksScreen> {
                       ),
                     ),
 
-                    subtitle: Text(task["description"] ?? ""),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(task["description"] ?? ""),
 
-                    // ✅ Open Details Only
+                        const SizedBox(height: 4),
+
+                        // 📅 Due Date
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.calendar_today,
+                              size: 14,
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              task["dueDate"] != null
+                                  ? task["dueDate"].toString().split("T")[0]
+                                  : "No Due Date",
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 4),
+
+                        //  Priority
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.flag,
+                              size: 14,
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              task["priority"] ?? "No Priority",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+
+                    // Open Details Only
                     onTap: () {
                       Navigator.push(
                         context,
